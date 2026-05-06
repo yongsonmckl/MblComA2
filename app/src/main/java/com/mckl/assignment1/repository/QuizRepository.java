@@ -8,13 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Repository class responsible for providing the quiz questions and calculating the result
- * based on the user's score tally.
+ * repository class responsible for providing the quiz questions and calculating the result
+ * based on the user's score tally
  */
 public class QuizRepository {
     /**
-     * Provides a list of 10 questions focused on work scenarios.
-     * @return List of 10 Question objects.
+     * provides a list of 10 questions focused on scenarios
+     * @return the list of 10 Question objects
      */
     public List<Question> getQuestions() {
         List<Question> questions = new ArrayList<>();
@@ -53,9 +53,9 @@ public class QuizRepository {
     }
 
     /**
-     * Calculates the career archetype based on the highest tally of scores.
-     * @param scores An array of 4 integers representing the count for each archetype.
-     * @return The CareerArchetype with the highest score.
+     * calculates the career archetype based on the highest tally of scores
+     * @param scores array of 4 integers representing the count for each archetype
+     * @return the CareerArchetype with the highest score.
      */
     public CareerArchetype calculateResult(int[] scores) {
         int maxIndex = 0;

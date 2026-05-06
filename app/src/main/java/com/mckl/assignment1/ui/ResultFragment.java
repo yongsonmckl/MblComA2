@@ -8,14 +8,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
-import com.mckl.assignment1.R;
+import com.mckl.assignment1.R;// res folder with weird naming convention (i think)
 import com.mckl.assignment1.databinding.FragmentResultBinding;
 import com.mckl.assignment1.model.CareerArchetype;
 
 /**
  * Fragment for the Result Screen.
- * Displays the user's identified career archetype, description, and job examples.
- * Implements dynamic UI by changing the background color based on the result.
+ * Displays the user's career archetype, description, and job examples.
+ * Has dynamic UI by changing the background color based on the result.
  */
 public class ResultFragment extends Fragment {
     private FragmentResultBinding binding;
@@ -30,25 +30,30 @@ public class ResultFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        
+
+        // collects the name that was passed thru from the bundle in QuizFragment
         String archetypeStr = getArguments() != null ? getArguments().getString("archetype") : null;
+
+        // Enum converter
         if (archetypeStr != null) {
             CareerArchetype archetype = CareerArchetype.valueOf(archetypeStr);
             displayResult(archetype);
         }
 
+        // move user to the HomeFragment if the button is pressed
         binding.btnRestart.setOnClickListener(v -> 
             Navigation.findNavController(v).navigate(R.id.action_resultFragment_to_homeFragment)
         );
     }
 
+    // shows the data that was stored in the model/CareerArchetype file
     private void displayResult(CareerArchetype archetype) {
         binding.tvResultTitle.setText(archetype.getTitle());
         binding.tvResultField.setText(archetype.getField());
         binding.tvResultDescription.setText(archetype.getDescription());
         binding.tvResultExamples.setText(archetype.getExamples());
         
-        // Dynamic theming: Change background color based on the identified career path.
+        // selects the background colour based on the career archetype
         int colorRes;
         
         switch (archetype) {
@@ -67,7 +72,8 @@ public class ResultFragment extends Fragment {
             default:
                 colorRes = R.color.background;
         }
-        
+
+        // sets the colour to the root container
         binding.resultContainer.setBackgroundResource(colorRes);
     }
 

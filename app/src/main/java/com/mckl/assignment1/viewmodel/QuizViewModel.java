@@ -17,21 +17,25 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * ViewModel for the Career Quiz.
- * Manages the state of the quiz, handles question progression, calculates results,
- * and persists the last result using SharedPreferences.
+ * ViewModel for the Career Quiz
+ * manages the state of the quiz, handles question progression, and calculates results
+ * holds the last result by using Shared Preferences
  */
 public class QuizViewModel extends AndroidViewModel {
-    private final QuizRepository repository;
-    private final List<Question> questions;
-    // Tally of scores: index 0: ARCHITECT, 1: VISIONARY, 2: GUARDIAN, 3: CAPTAIN
-    private final int[] scores = new int[4]; 
+
+    private final QuizRepository repository; // stores the question List
+
+    private final List<Question> questions; // question list
+
+    // index for the scores: 0 = ARCHITECT, 1 = VISIONARY, 2 = GUARDIAN, 3 = CAPTAIN
+    private final int[] scores = new int[4]; // turns out the number here isn't index but slots
     
-    // LiveData for the UI to observe current state
+    // LiveData for the UI to see changes
     private final MutableLiveData<Integer> currentQuestionIndex = new MutableLiveData<>(0);
     private final MutableLiveData<Question> currentQuestion = new MutableLiveData<>();
     private final MutableLiveData<CareerArchetype> result = new MutableLiveData<>();
 
+    // pulls the 10 questions and updates it to the UI
     public QuizViewModel(@NonNull Application application) {
         super(application);
         repository = new QuizRepository();
@@ -53,44 +57,42 @@ public class QuizViewModel extends AndroidViewModel {
     }
 
     /**
-     * Records the user's choice and moves to the next question or finishes the quiz.
-     * The option index corresponds to the career categories:
+     * records the user's choice and moves to the next question or finishes the quiz
+     * the option index corresponds to the career categories:
      * 0: ARCHITECT, 1: VISIONARY, 2: GUARDIAN, 3: CAPTAIN
-     * @param optionIndex The index of the selected option (0-3).
+     * @param optionIndex the index of the selected option (0,1,2,3)
      */
     public void answerQuestion(int optionIndex) {
         if (optionIndex >= 0 && optionIndex < 4) {
-            // Increment the score for the selected category
+            // increment the score for the specific archetype chosen
             scores[optionIndex]++;
         }
         Integer index = currentQuestionIndex.getValue();
         if (index != null) {
-            // If there are more questions, move to the next one
+            // move to the next question unless user is at the end
             if (index < questions.size() - 1) {
                 currentQuestionIndex.setValue(index + 1);
                 updateQuestion();
             } else {
-                // Otherwise, calculate the final result
                 calculateAndSaveResult();
             }
         }
     }
 
+    // updates the UI with the question the user is at based on index
     private void updateQuestion() {
         Integer index = currentQuestionIndex.getValue();
         if (index != null && index < questions.size()) {
-            currentQuestion.setValue(questions.get(index));
+            currentQuestion.setValue(questions.get(index)); // stops it from crashing
         }
     }
 
-    /**
-     * Calculates the final result and saves it to SharedPreferences for persistence.
-     */
+    // calculates the final result and also saves it to Shared Preferences
     private void calculateAndSaveResult() {
         CareerArchetype finalResult = repository.calculateResult(scores);
         result.setValue(finalResult);
         
-        // Save to SharedPreferences
+        // save to Shared Preferences with formatting
         SharedPreferences prefs = getApplication().getSharedPreferences("quiz_prefs", Context.MODE_PRIVATE);
         String date = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(new Date());
         prefs.edit()

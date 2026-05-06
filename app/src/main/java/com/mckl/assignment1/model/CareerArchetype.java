@@ -1,8 +1,8 @@
 package com.mckl.assignment1.model;
 
 /**
- * Enum representing the four career paths/archetypes as defined in the assignment requirements.
- * Each archetype contains a title, broad field, description, and job examples.
+ * Enum representing the four career archetypes
+ * Each archetype contains a title, broad field, description, and job examples
  */
 public enum CareerArchetype {
     ARCHITECT("The Architect", "STEM (Science, Technology, Engineering, Math)", "You are analytical, logical, and love solving complex problems. You thrive in environments that require precision and technical expertise.", "Software Engineer, Data Scientist, Civil Engineer, Research Scientist"),
@@ -22,6 +22,7 @@ public enum CareerArchetype {
         this.examples = examples;
     }
 
+    // the getters
     public String getTitle() { return title; }
     public String getField() { return field; }
     public String getDescription() { return description; }

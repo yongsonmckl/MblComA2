@@ -3,8 +3,8 @@ package com.mckl.assignment1.model;
 import java.util.List;
 
 /**
- * Data model for a quiz question.
- * Each question consists of a query string and a list of four options.
+ * data model for a quiz question
+ * each question consists of a query string and a list of four options
  */
 public class Question {
     // The text of the question
@@ -13,9 +13,9 @@ public class Question {
     private final List<String> options;
 
     /**
-     * Constructor for Question.
-     * @param text The question text.
-     * @param options The list of options (must be 4 as per requirements).
+     * constructor for Question
+     * @param text the question text
+     * @param options the list of options
      */
     public Question(String text, List<String> options) {
         this.text = text;
