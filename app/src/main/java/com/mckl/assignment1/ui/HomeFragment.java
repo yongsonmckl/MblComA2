@@ -1,25 +1,28 @@
 package com.mckl.assignment1.ui;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
-import com.mckl.assignment1.R; // res folder with weird naming convention (i think)
+
+import com.mckl.assignment1.R;
 import com.mckl.assignment1.databinding.FragmentHomeBinding;
+import com.mckl.assignment1.model.QuizAttempt;
+import com.mckl.assignment1.viewmodel.HomeViewModel;
 
 /**
- * fragment for the Home Screen
- * displays the "Start Quiz" button and the result of the last assessment if available
+ * Fragment for the home screen.
  */
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
-    // creating the page
+    private HomeViewModel viewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,23 +33,31 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
 
-        // using Shared Preferences to save the user's last result and date of that result
-        SharedPreferences prefs = requireContext().getSharedPreferences("quiz_prefs", Context.MODE_PRIVATE);
-        String lastResult = prefs.getString("last_result", null);
-        String lastDate = prefs.getString("last_date", null);
+        viewModel.getLatestAttempt().observe(getViewLifecycleOwner(), this::renderLatestAttempt);
 
-        // checks if there is previous saved data, if so, then uses the formatting from the strings.xml
-        if (lastResult != null && lastDate != null) {
-            binding.tvLastResult.setText(getString(R.string.last_result_format, lastResult, lastDate));
-        } else {
-            binding.tvLastResult.setText(getString(R.string.last_result_none)); // if no data, then "none"
-        }
-
-        // changes the fragment to the quiz fragment when pressing the button
-        binding.btnStart.setOnClickListener(v -> 
-            Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_quizFragment)
+        binding.btnStart.setOnClickListener(v ->
+                Navigation.findNavController(v).navigate(R.id.action_homeFragment_to_quizFragment)
         );
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (viewModel != null) {
+            viewModel.refreshLatestAttempt();
+        }
+    }
+
+    private void renderLatestAttempt(QuizAttempt attempt) {
+        if (attempt != null && attempt.getArchetypeTitle() != null && attempt.getCompletedAt() != null) {
+            binding.tvLastResult.setText(
+                    getString(R.string.last_result_format, attempt.getArchetypeTitle(), attempt.getCompletedAt())
+            );
+        } else {
+            binding.tvLastResult.setText(getString(R.string.last_result_none));
+        }
     }
 
     @Override

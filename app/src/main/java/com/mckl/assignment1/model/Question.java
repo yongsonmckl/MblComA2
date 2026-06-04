@@ -1,27 +1,32 @@
 package com.mckl.assignment1.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * data model for a quiz question
- * each question consists of a query string and a list of four options
+ * Data model for a quiz question loaded from SQLite.
  */
 public class Question {
-    // The text of the question
+    private final int questionId;
     private final String text;
-    // The list of 4 possible answers
-    private final List<String> options;
+    private final List<QuestionOption> options;
 
-    /**
-     * constructor for Question
-     * @param text the question text
-     * @param options the list of options
-     */
-    public Question(String text, List<String> options) {
+    public Question(int questionId, String text, List<QuestionOption> options) {
+        this.questionId = questionId;
         this.text = text;
-        this.options = options;
+        this.options = new ArrayList<>(options);
     }
 
-    public String getText() { return text; }
-    public List<String> getOptions() { return options; }
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public List<QuestionOption> getOptions() {
+        return Collections.unmodifiableList(options);
+    }
 }

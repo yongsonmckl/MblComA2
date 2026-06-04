@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Assignment1"
+rootProject.name = "WYongsonAssignment1"
 include(":app")
  
