@@ -163,6 +163,8 @@ public class QuizRepository {
     public long createQuizAttempt() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
+        // Insert a real parent row immediately so attempt_answers can safely reference it.
+        values.put(QuizDatabaseHelper.COLUMN_ATTEMPT_COMPLETED_AT, "");
         return db.insert(QuizDatabaseHelper.TABLE_QUIZ_ATTEMPTS, null, values);
     }
 
